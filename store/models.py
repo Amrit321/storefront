@@ -7,16 +7,21 @@ class Promotion(models.Model):
     discount = models.FloatField()
     def __str__(self):
         return self.description
+    
+
 
 class Collection(models.Model):
     title = models.CharField(max_length=255)
     featured_product = models.ForeignKey('Product', on_delete=models.SET_NULL, null=True, related_name='+')
 
-    def __str__(self):
+    def __str__(self) -> str:
         return self.title
     
     class Meta:
         ordering = ['title']
+
+
+
 
 class Product(models.Model):
     title = models.CharField(max_length=255)
@@ -57,6 +62,10 @@ class Customer(models.Model):
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}'
+
+    class Meta:
+        ordering = ['first_name', 'last_name']
+
 
 
 
