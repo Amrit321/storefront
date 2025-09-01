@@ -31,7 +31,7 @@ class Product(models.Model):
     inventory = models.IntegerField()
     last_update = models.DateField(auto_now=True)
     promotions = models.ManyToManyField(Promotion)
-    Collection = models.ForeignKey(Collection, on_delete=models.CASCADE, null=True)
+    collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
 
     def __str__(self):
         return self.title
@@ -81,6 +81,7 @@ class Order(models.Model):
     ]
     placed_at = models.DateTimeField(auto_now_add=True)
     payment_status = models.CharField(max_length=1, choices=PAYMENT_STATUS_CHOICES, default=PAYMENT_STATUS_PENDING)
+    customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
 
 
