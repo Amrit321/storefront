@@ -84,6 +84,16 @@ class Order(models.Model):
     customer = models.ForeignKey(Customer, on_delete=models.PROTECT)
 
 
+    
+    def __str__(self):
+        # return self.customer.first_name + ' ' + self.customer.last_name
+        return f'{self.customer.first_name} {self.customer.last_name}'
+
+    class Meta:
+        ordering = ['placed_at']
+
+
+
 
 class Address(models.Model):
     street = models.CharField(max_length=255)
