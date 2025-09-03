@@ -1,5 +1,7 @@
 from django.db import models
 
+# can use django validators to vaidate the fields below
+
 # Create your models here.
 
 class Promotion(models.Model):
@@ -30,7 +32,7 @@ class Product(models.Model):
     unit_price = models.DecimalField(max_digits=6, decimal_places=2)
     inventory = models.IntegerField()
     last_update = models.DateField(auto_now=True)
-    promotions = models.ManyToManyField(Promotion)
+    promotions = models.ManyToManyField(Promotion, blank=True)
     collection = models.ForeignKey(Collection, on_delete=models.PROTECT)
 
     def __str__(self):
