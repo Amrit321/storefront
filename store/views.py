@@ -9,8 +9,9 @@ from .serializers import ProductSerializer
 
 @api_view()
 def product_list(request):
-    queryset = Product.objects.all()
-    serializer = ProductSerializer(queryset, many = True)
+    # select_related makes site load faster as it loads the related field and makes less time to render so when we render product their collection also gets loaded
+    queryset = Product.objects.select_related('collection').all()
+    serializer = ProductSerializer(queryset, many = True, context={'request': request})
     return Response(serializer.data)
 
 
@@ -22,3 +23,6 @@ def product_detail(request, id):
         serializer = ProductSerializer(product)
         return Response(serializer.data)
     
+@api_view()
+def collection_detail(request, pk):
+      return Response('ok')
