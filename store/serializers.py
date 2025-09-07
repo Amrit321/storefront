@@ -24,7 +24,7 @@ class CollectionSerializer(serializers.ModelSerializer):
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = ['id', 'title', 'unit_price', 'price_with_tax', 'collection']
+        fields = ['id', 'title', 'description', 'slug', 'inventory', 'unit_price', 'price_with_tax', 'collection']
         # so after using model serializer we do not need to do as below
     # id = serializers.IntegerField()
     # title = serializers.CharField(max_length=255)
@@ -53,6 +53,11 @@ class ProductSerializer(serializers.ModelSerializer):
     def calculate_tax(self, product: Product):
         return product.unit_price * Decimal(1.1)
     
+    
 
 
     # to implement serializing relations we import Collection model
+
+
+
+

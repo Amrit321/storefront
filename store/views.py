@@ -7,14 +7,23 @@ from .models import Product
 from .serializers import ProductSerializer
 # Create your views here.
 
-@api_view()
+# implementing deserializer in product list as it should take data from user via post and update in db
+@api_view(['GET', 'POST'])
 def product_list(request):
+    if request.method == 'GET':
     # select_related makes site load faster as it loads the related field and makes less time to render so when we render product their collection also gets loaded
-    queryset = Product.objects.select_related('collection').all()
-    serializer = ProductSerializer(queryset, many = True, context={'request': request})
-    return Response(serializer.data)
+        queryset = Product.objects.select_related('collection').all()
+        serializer = ProductSerializer(queryset, many = True, context={'request': request})
+        return Response(serializer.data)
 
-
+    elif request.method == 'POST':
+        serializer = ProductSerializer(data = request.data)
+        # validationg data
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response('saved')
+        
+             
 
 @api_view()
 def product_detail(request, id):
