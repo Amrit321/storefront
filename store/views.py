@@ -1,7 +1,7 @@
 from django.db.models import Count
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponse
-from rest_framework.mixins import ListModelMixin, CreateModelMixin
+from rest_framework.generics import ListCreateAPIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -10,21 +10,35 @@ from .models import Product, Collection
 from .serializers import ProductSerializer, CollectionSerializer
 # Create your views here.
 
-# implementing deserializer in product list as it should take data from user via post and update in db
 
-class ProductList(APIView):
-    def get(self, request):
-    # select_related makes site load faster as it loads the related field and makes less time to render so when we render product their collection also gets loaded
-        queryset = Product.objects.select_related('collection').all()
-        serializer = ProductSerializer(queryset, many = True, context={'request': request})
-        return Response(serializer.data)
+# IMPLEMENTING GENERIC VIEWS
+class ProductList(ListCreateAPIView):
+    queryset = Product.objects.select_related('collection').all()
+    serializer_class = ProductSerializer
+
+    def get_serializer_context(self):
+        return {'request': self.request}
+    
+
+
+
+
+
+# # THIS IS CLASS BASED VIEWS
+
+# class ProductList(APIView):
+#     def get(self, request):
+#     # select_related makes site load faster as it loads the related field and makes less time to render so when we render product their collection also gets loaded
+#         queryset = Product.objects.select_related('collection').all()
+#         serializer = ProductSerializer(queryset, many = True, context={'request': request})
+#         return Response(serializer.data)
      
-    def post(self, request):
-        serializer = ProductSerializer(data = request.data)
-        # validationg data
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+#     def post(self, request):
+#         serializer = ProductSerializer(data = request.data)
+#         # validationg data
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 
@@ -91,22 +105,33 @@ class ProductDetail(APIView):
 #             return Response(status=status.HTTP_204_NO_CONTENT)        
 
 
+# GENERIC VIEW OF COLLECTION LIST
+class CollectionList(ListCreateAPIView):
+    queryset = Collection.objects.annotate(products_count = Count('products')).all()
+    serializer_class = CollectionSerializer
+    def get_serializer_context(self):
+        return {'request', self.request}
+    
 
-@api_view(['GET', 'POST'])
-def collection_list(request):
-    if request.method == 'GET':
-    # select_related makes site load faster as it loads the related field and makes less time to render so when we render collection and their product count also gets loaded
-    # here in Count() if we write related_name in foreign key in product we must write it otherwise we can write product
-        queryset = Collection.objects.annotate(products_count = Count('products')).all()
-        serializer = CollectionSerializer(queryset, many = True)
-        return Response(serializer.data)
 
-    elif request.method == 'POST':
-        serializer = CollectionSerializer(data = request.data)
-        # validationg data
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    
+# # API VIEW OF COLLECTION LIST
+# @api_view(['GET', 'POST'])
+# def collection_list(request):
+#     if request.method == 'GET':
+#     # select_related makes site load faster as it loads the related field and makes less time to render so when we render collection and their product count also gets loaded
+#     # here in Count() if we write related_name in foreign key in product we must write it otherwise we can write product
+#         queryset = Collection.objects.annotate(products_count = Count('products')).all()
+#         serializer = CollectionSerializer(queryset, many = True)
+#         return Response(serializer.data)
+
+#     elif request.method == 'POST':
+#         serializer = CollectionSerializer(data = request.data)
+#         # validationg data
+#         serializer.is_valid(raise_exception=True)
+#         serializer.save()
+#         return Response(serializer.data, status=status.HTTP_201_CREATED)
         
 
 
