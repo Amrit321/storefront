@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from decimal import Decimal
 
-from store.models import Product, Collection
+from store.models import Product, Collection, Review
 
 
 
@@ -62,5 +62,12 @@ class ProductSerializer(serializers.ModelSerializer):
     # to implement serializing relations we import Collection model
 
 
-
-
+class ReviewSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Review
+        fields = ['id', 'name', 'date', 'description']
+        
+    # this function to create the id of the product extract in views.py so it will automatically insert the id of the specific product
+    def create(self, validated_data):
+        product_id = self.context['product_id']
+        return Review.objects.create(product_id = product_id, **validated_data)
