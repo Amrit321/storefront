@@ -8,6 +8,8 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from rest_framework import status
+
+from store.filters import ProductFilter
 from .models import OrderItem, Product, Collection, Review
 from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer
 # Create your views here.
@@ -18,7 +20,7 @@ class ProductViewSet(ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
     filter_backends = [DjangoFilterBackend]
-    filterset_fields = ['collection_id', 'unit_price']
+    filterset_class = ProductFilter
 
 # **** this below code is used to filter the product by collection_id if we do not use Django-filter
     # def get_queryset(self):
