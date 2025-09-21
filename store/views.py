@@ -59,6 +59,19 @@ class CollectionViewSet(ModelViewSet):
 
 
 
+
+
+
+# here instead of model viewset I implemented costomviewset
+# class CartViewSet(CreateModelMixin, GenericViewSet):
+class CartViewSet(ModelViewSet):
+    # prefetch_related because a cart can have multiple items
+    queryset = Cart.objects.prefetch_related('items__product').all()
+    serializer_class = CartSerializer
+
+
+
+
 class ReviewViewSet(ModelViewSet): 
     serializer_class = ReviewSerializer
 
@@ -76,10 +89,7 @@ class ReviewViewSet(ModelViewSet):
 
 
 
-# here instead of model viewset I implemented costomviewset
-class CartViewSet(CreateModelMixin, GenericViewSet):
-    queryset = Cart.objects.all()
-    serializer_class = CartSerializer
+
 
 
 
