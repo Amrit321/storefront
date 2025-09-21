@@ -3,12 +3,12 @@ from django.shortcuts import get_object_or_404
 from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework.filters import SearchFilter, OrderingFilter
 from rest_framework.response import Response
-from rest_framework.viewsets import ModelViewSet
+from rest_framework.viewsets import ModelViewSet, GenericViewSet
 from rest_framework import status
-
+from rest_framework.mixins import CreateModelMixin
 from store.pagination import DefaultPagination
-from .models import OrderItem, Product, Collection, Review
-from .serializers import ProductSerializer, CollectionSerializer, ReviewSerializer
+from .models import Cart, OrderItem, Product, Collection, Review
+from .serializers import CartSerializer, ProductSerializer, CollectionSerializer, ReviewSerializer
 from store.filters import ProductFilter
 
 # Create your views here.
@@ -72,6 +72,14 @@ class ReviewViewSet(ModelViewSet):
 
 
 
+
+
+
+
+# here instead of model viewset I implemented costomviewset
+class CartViewSet(CreateModelMixin, GenericViewSet):
+    queryset = Cart.objects.all()
+    serializer_class = CartSerializer
 
 
 
